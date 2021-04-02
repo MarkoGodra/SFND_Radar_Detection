@@ -14,8 +14,8 @@ clc;
 % *%TODO* :
 % define the target's initial position and velocity. Note : Velocity
 % remains contant
- 
-
+d0 = 30;
+v0 = 10;
 
 %% FMCW Waveform Generation
 
@@ -23,12 +23,16 @@ clc;
 %Design the FMCW waveform by giving the specs of each of its parameters.
 % Calculate the Bandwidth (B), Chirp Time (Tchirp) and Slope (slope) of the FMCW
 % chirp using the requirements above.
-
+Rmax = 200;
+dr = 1;
+c = 3 * 10^8;
+Bsweep = c / 2 * dr;
+Tchirp = 5.5 * 2 * Rmax / c;
+alpha = Bsweep / Tchirp; % Slope
 
 %Operating carrier frequency of Radar 
 fc= 77e9;             %carrier freq
 
-                                                          
 %The number of chirps in one sequence. Its ideal to have 2^ value for the ease of running the FFT
 %for Doppler Estimation. 
 Nd=128;                   % #of doppler cells OR #of sent periods % number of chirps
@@ -40,7 +44,6 @@ Nr=1024;                  %for length of time OR # of range cells
 % chirp
 t=linspace(0,Nd*Tchirp,Nr*Nd); %total time for samples
 
-
 %Creating the vectors for Tx, Rx and Mix based on the total samples input.
 Tx=zeros(1,length(t)); %transmitted signal
 Rx=zeros(1,length(t)); %received signal
@@ -50,27 +53,26 @@ Mix = zeros(1,length(t)); %beat signal
 r_t=zeros(1,length(t));
 td=zeros(1,length(t));
 
-
 %% Signal generation and Moving Target simulation
 % Running the radar scenario over the time. 
 
 for i=1:length(t)         
-    
-    
     % *%TODO* :
     %For each time stamp update the Range of the Target for constant velocity. 
+    r_t(i) = d0 + v0 * t(i);
+    td(i) = 2 * r_t(i) / c;
     
     % *%TODO* :
     %For each time sample we need update the transmitted and
     %received signal. 
-    Tx(i) = 
-    Rx (i)  =
+    Tx(i) = cos(2 * pi * (fc * t(i) + (alpha * t(i)^2) / 2));
+    Rx(i) = cos(2 * pi * (fc * (t(i) - td(i)) + alpha * ((t(i) - td(i)) ^ 2) / 2.0));
     
     % *%TODO* :
     %Now by mixing the Transmit and Receive generate the beat signal
     %This is done by element wise matrix multiplication of Transmit and
     %Receiver Signal
-    Mix(i) = 
+    Mix(i) = Tx(i) .* Rx(i);
     
 end
 
