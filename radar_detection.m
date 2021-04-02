@@ -30,7 +30,7 @@ Bsweep = c / 2 * dr;
 Tchirp = 5.5 * 2 * Rmax / c;
 alpha = Bsweep / Tchirp; % Slope
 
-disp(alpha)
+disp(alpha);
 
 %Operating carrier frequency of Radar 
 fc= 77e9;             %carrier freq
