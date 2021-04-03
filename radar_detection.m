@@ -182,8 +182,8 @@ output = zeros(size(RDM));
 total_training_area_num_cells = (2 * (Tr + Gr) + 1) * (2 * (Td + Gd) + 1) - (2 * Gr + 1) * (2 * Gd + 1); 
 for i = Tr + Gr + 1 : (Nr / 2 - (Tr + Gr))
    for j = Td + Gd + 1 : (Nd - (Gd + Td))
-       sum_T_and_G = sum(db2pow(RDM(i - Tr - Gr : i + Tr + Gr, j - Td - Gd : j + Td + Gd)), 'all');
-       sum_G = sum(db2pow(RDM(i- Gr : i + Gr, j - Gd : j + Gd)), 'all');
+       sum_T_and_G = sum(sum(db2pow(RDM(i - Tr - Gr : i + Tr + Gr, j - Td - Gd : j + Td + Gd))));
+       sum_G = sum(sum(db2pow(RDM(i- Gr : i + Gr, j - Gd : j + Gd))));
        
         
        average_noise_level_in_training_cells = (sum_T_and_G - sum_G) / total_training_area_num_cells;
